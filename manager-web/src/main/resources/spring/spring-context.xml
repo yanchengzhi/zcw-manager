@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+    http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+    
+    <!-- 配置扫描，托管注解的类 -->
+    <context:component-scan base-package="com.ycz.zcw.manager.*">
+       <!-- 排除控制层 -->
+       <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    
+    <!-- 加载数据库连接配置文件 -->
+    <context:property-placeholder
+    location="classpath:/db/dbconf.properties" file-encoding="utf-8"/>
+    
+    <!-- 配置数据源信息，使用c3p0数据源 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+       <property name="url" value="${jdbc_url}"></property>
+       <property name="driverClassName" value="${jdbc_driverClass}"></property>
+       <property name="username" value="${jdbc_username}"></property>
+       <property name="password" value="${jdbc_password}"></property>
+    </bean>
+    
+    <!-- 整合MyBatis -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+       <!-- 加载数据源 -->
+       <property name="dataSource" ref="dataSource"></property>
+       <!-- 加载Mybatis核心配置文件 -->
+       <property name="configLocation" value="classpath:/mybatis/config.xml"></property>
+       <!-- 加载mapper映射文件 -->
+       <property name="mapperLocations">
+         <list>
+           <value>classpath:/mybatis/mapper/*.xml</value>
+         </list>
+       </property>
+    </bean>
+   
+    <!-- mapper文件映射接口dao层 -->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+       <property name="basePackage" value="com.ycz.zcw.manager.dao"></property>
+    </bean>
+    
+    <!-- 配置事务处理，保持数据的一致性 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+       <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+       <tx:attributes>
+           <tx:method name="*" propagation="REQUIRED" isolation="DEFAULT" rollback-for="java.lang.Exception" />
+           <tx:method name="query*" read-only="true" />
+       </tx:attributes>
+    </tx:advice>
+    <!-- 事务切入点 -->
+    <aop:config>
+       <aop:advisor advice-ref="transactionAdvice" 
+       pointcut="execution(* com.ycz.zcw.*service.*(..))"/>
+    </aop:config>
+    
+</beans>
