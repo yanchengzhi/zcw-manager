@@ -1,6 +1,7 @@
 package com.ycz.zcw.manager.pojo;
 
 public class AccountTypeCert {
+    
     private Integer id;
 
     private String accttype;
