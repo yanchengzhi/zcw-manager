@@ -108,7 +108,8 @@
       #{username,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{createtime,jdbcType=CHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.ycz.zcw.manager.pojo.User">
+  <insert id="insertSelective" parameterType="com.ycz.zcw.manager.pojo.User"
+  useGeneratedKeys="true" keyProperty="id">
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

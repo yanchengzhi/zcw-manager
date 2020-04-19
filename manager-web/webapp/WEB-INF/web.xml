@@ -23,6 +23,13 @@
 	   </param-value>
   </context-param>
   
+  <!-- 配置路径监听 -->
+  <listener>
+     <listener-class>
+         com.ycz.zcw.manager.web.ServerStartupListener
+     </listener-class>
+  </listener>
+  
   <!-- 配置springMVC前沿控制器 -->
   <servlet>
     <servlet-name>springMVC</servlet-name>

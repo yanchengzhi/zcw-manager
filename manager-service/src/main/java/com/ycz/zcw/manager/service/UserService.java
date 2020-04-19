@@ -6,4 +6,6 @@ public interface UserService {
     
     User queryUser(Integer id);
 
+    boolean register(User user);
+
 }
