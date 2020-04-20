@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
@@ -24,20 +25,24 @@
 
     <div class="container">
 
-      <form class="form-signin" role="form">
+      <form class="form-signin" role="form" id="loginForm" action="${APP_PATH}/permission/user/login" method="post">
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2>
 		  <div class="form-group has-success has-feedback">
-			<input type="text" class="form-control" id="inputSuccess4" placeholder="请输入登录账号" autofocus>
+			<input type="text" class="form-control" name="loginacct" id="login_input" value="${errorUser.loginacct}" placeholder="请输入登录账号" autofocus>
 			<span class="glyphicon glyphicon-user form-control-feedback"></span>
+			<span style="color:red;font-size:15px">${msg}</span>
+			<!-- 取出一次后将Sesion中的该对象移除掉 -->
+			<c:remove var="msg"/>
+			<c:remove var="errorUser"/>
 		  </div>
 		  <div class="form-group has-success has-feedback">
-			<input type="text" class="form-control" id="inputSuccess4" placeholder="请输入登录密码" style="margin-top:10px;">
+			<input type="password" class="form-control" name="userpswd" id="userpswd_input" placeholder="请输入登录密码" style="margin-top:10px;">
 			<span class="glyphicon glyphicon-lock form-control-feedback"></span>
 		  </div>
 		  <div class="form-group has-success has-feedback">
 			<select class="form-control" >
                 <option value="member">会员</option>
-                <option value="user">管理</option>
+                <option value="manager">管理</option>
             </select>
 		  </div>
         <div class="checkbox">
@@ -59,11 +64,14 @@
     <script>
     function dologin() {
         var type = $(":selected").val();
-        if ( type == "user" ) {
-            window.location.href = "main.html";
-        } else {
-            window.location.href = "index.html";
+        if ( type == "manager" ) {//管理员登录
+            //表单提交
+            $('#loginForm').submit();
+        
+        } else {//跳转到默认门户网站
+            window.location.href = "${APP_PATH}/index.jsp";
         }
+        return;
     }
     </script>
   </body>

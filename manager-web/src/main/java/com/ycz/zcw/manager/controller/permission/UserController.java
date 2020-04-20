@@ -28,7 +28,7 @@ public class UserController {
     
     /**
      * 
-     * @Description (跳转到注册页面)
+     * @Description (用户注册)
      * @param user
      * @return
      */
@@ -37,11 +37,25 @@ public class UserController {
         boolean flag = uService.register(user);
         if(flag) {//注册成功，跳往主页
             session.setAttribute(Constants.LOGIN_USER, user);//将用户对象存到session域中
-            return "/manager/main";
+            return "redirect:/main.html";
         }else {//注册失败，重定向到注册页面
             model.addAttribute("regError","用户名已被占用！");
             model.addAttribute("user",user);
             return "forward:/register.jsp";
+        }
+    }
+    
+    @RequestMapping("login")
+    public String login(User user,HttpSession session) {
+        User dbUser = uService.queryUser(user);
+        if(dbUser==null) {//登录失败时
+            session.setAttribute("errorUser", user);
+            session.setAttribute("msg", "登陆失败！");
+            //重定向到登录页面
+            return "redirect:/login.jsp";
+        }else {//登录成功时
+            session.setAttribute(Constants.LOGIN_USER, dbUser);
+            return "redirect:/main.html";
         }
     }
 

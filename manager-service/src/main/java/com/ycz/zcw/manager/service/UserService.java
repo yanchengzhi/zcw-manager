@@ -4,8 +4,8 @@ import com.ycz.zcw.manager.pojo.User;
 
 public interface UserService {
     
-    User queryUser(Integer id);
+    User queryUser(User user);//验证用户
 
-    boolean register(User user);
+    boolean register(User user);//注册用户
 
 }

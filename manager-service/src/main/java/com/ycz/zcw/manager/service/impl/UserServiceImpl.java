@@ -1,8 +1,8 @@
 package com.ycz.zcw.manager.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +10,7 @@ import com.ycz.project.MD5Util;
 import com.ycz.project.MyStringUtil;
 import com.ycz.zcw.manager.dao.UserMapper;
 import com.ycz.zcw.manager.pojo.User;
+import com.ycz.zcw.manager.pojo.UserExample;
 import com.ycz.zcw.manager.service.UserService;
 
 @Service
@@ -19,8 +20,21 @@ public class UserServiceImpl implements UserService {
     private UserMapper uMapper;
 
     @Override
-    public User queryUser(Integer id) {
-        return uMapper.selectByPrimaryKey(id);
+    public User queryUser(User user) {
+        //查询数据库中是否存在该用户
+        UserExample example = new UserExample();
+        com.ycz.zcw.manager.pojo.UserExample.Criteria criteria = example.createCriteria();
+        //设置查询条件
+        criteria.andLoginacctEqualTo(user.getLoginacct());//查询登录名
+        criteria.andUserpswdEqualTo(MD5Util.digest(user.getUserpswd()));//密码查询
+        //返回的是一个List集合，要进行处理
+        List <User> list = null;
+        try {
+            list = uMapper.selectByExample(example);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+          return list.size()==1?list.get(0):null;
     }
 
     @Override
