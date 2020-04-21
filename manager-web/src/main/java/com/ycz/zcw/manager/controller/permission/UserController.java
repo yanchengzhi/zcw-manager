@@ -117,7 +117,7 @@ public class UserController {
             userPage.setMaxPage(maxPage);
             userPage.setPage(page);
             userPage.setTotalSize(totalSize);
-            result.setData(userPage);//封装到result中返回给前台
+            result.setData(userPage);//封装到result中返给前台
             result.setSuccess(true);
         } catch (Exception e) {
             e.printStackTrace();
