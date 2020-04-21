@@ -18,7 +18,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
-          <div><a class="navbar-brand" href="index.html" style="font-size:32px;">尚筹网-创意产品众筹平台</a></div>
+          <div><a class="navbar-brand" href="index.html" style="font-size:32px;">众筹网-创意产品众筹平台</a></div>
         </div>
       </div>
     </nav>
@@ -41,8 +41,8 @@
 		  </div>
 		  <div class="form-group has-success has-feedback">
 			<select class="form-control" >
+			    <option value="manager">管理</option>
                 <option value="member">会员</option>
-                <option value="manager">管理</option>
             </select>
 		  </div>
         <div class="checkbox">
@@ -69,7 +69,7 @@
             $('#loginForm').submit();
         
         } else {//跳转到默认门户网站
-            window.location.href = "${APP_PATH}/index.jsp";
+            alert("此功能尚未开通！")
         }
         return;
     }

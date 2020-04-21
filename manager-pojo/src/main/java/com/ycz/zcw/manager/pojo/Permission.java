@@ -1,6 +1,9 @@
 package com.ycz.zcw.manager.pojo;
 
+import java.util.List;
+
 public class Permission {
+    
     private Integer id;
 
     private Integer pid;
@@ -10,6 +13,17 @@ public class Permission {
     private String icon;
 
     private String url;
+    
+    private List<Permission> childs;//顶级菜单的所有一级子菜单
+    
+    public List<Permission> getChilds() {
+        return childs;
+    }
+
+    
+    public void setChilds(List<Permission> childs) {
+        this.childs = childs;
+    }
 
     public Integer getId() {
         return id;

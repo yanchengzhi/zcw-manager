@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ycz.zcw.manager.dao.UserDao">
+    <!-- 查询总的记录条数 -->
+    <select id="getUsersTotal" resultType="int" parameterType="map">
+       select count(*) from t_user
+       <where>
+          <if test="queryText!=null">
+             and username like concat('%',#{queryText},'%')
+          </if>
+          <if test="queryText!=null">
+             or email like concat('%',#{queryText},'%')
+          </if>
+       </where>
+    </select>
+    
+    <!-- 分页查询用户 -->
+    <select id="queryUsersPaged" resultType="com.ycz.zcw.manager.pojo.User" parameterType="map">
+       select * from t_user
+       <where>
+          <if test="queryText!=null">
+             and username like concat('%',#{queryText},'%')
+          </if>
+          <if test="queryText!=null">
+             or email like concat('%',#{queryText},'%')
+          </if>
+       </where>
+       order by createtime desc
+       limit #{offset},#{pageSize}
+    </select>
+</mapper>

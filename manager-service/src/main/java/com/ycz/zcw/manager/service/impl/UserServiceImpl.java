@@ -2,12 +2,14 @@ package com.ycz.zcw.manager.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ycz.project.MD5Util;
 import com.ycz.project.MyStringUtil;
+import com.ycz.zcw.manager.dao.UserDao;
 import com.ycz.zcw.manager.dao.UserMapper;
 import com.ycz.zcw.manager.pojo.User;
 import com.ycz.zcw.manager.pojo.UserExample;
@@ -18,6 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper uMapper;
+    
+    @Autowired
+    private UserDao uDao;
 
     @Override
     public User queryUser(User user) {
@@ -53,6 +58,22 @@ public class UserServiceImpl implements UserService {
         }
         // 判断数据是否保存成功
         return res == 1 ? true : false;
+    }
+
+    @Override
+    public List<User> getAll() {
+        List<User> uList = uMapper.selectByExample(null);
+        return uList;
+    }
+
+    @Override
+    public int getUsersTotal(Map<String, Object> map) {
+        return uDao.getUsersTotal(map);
+    }
+
+    @Override
+    public List<User> queryUsersPaged(Map<String, Object> map) {
+        return uDao.queryUsersPaged(map);
     }
 
 }

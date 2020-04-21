@@ -1,12 +1,20 @@
 package com.ycz.zcw.manager.controller.permission;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ycz.zcw.manager.pojo.AjaxResult;
+import com.ycz.zcw.manager.pojo.Page;
 import com.ycz.zcw.manager.pojo.User;
 import com.ycz.zcw.manager.pojo.constants.Constants;
 import com.ycz.zcw.manager.service.UserService;
@@ -45,6 +53,13 @@ public class UserController {
         }
     }
     
+    /**
+     * 
+     * @Description (用户登录)
+     * @param user
+     * @param session
+     * @return
+     */
     @RequestMapping("login")
     public String login(User user,HttpSession session) {
         User dbUser = uService.queryUser(user);
@@ -57,6 +72,58 @@ public class UserController {
             session.setAttribute(Constants.LOGIN_USER, dbUser);
             return "redirect:/main.html";
         }
+    }
+    
+    /**
+     * 
+     * @Description (跳往用户页面)
+     * @return
+     */
+    @RequestMapping("index")
+    public String index() {
+        return "manager/permission/user/index";
+    }
+    
+    /**
+     * 
+     * @Description (分页查询)
+     * @param page
+     * @param pageSize
+     * @param queryText
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("list")
+    public Object list(
+            @RequestParam(value="page",required = true) Integer page,
+            @RequestParam(value="pageSize",required = false) Integer pageSize,
+            @RequestParam(value="queryText",required = false) String queryText
+            ) {
+        AjaxResult result = new AjaxResult();
+        try {
+            Map<String,Object> map = new HashMap<>();
+            map.put("offset",(page-1)*pageSize);
+            map.put("pageSize",pageSize);
+            map.put("queryText",queryText);
+            //查询需要的记录
+            List<User> users = uService.queryUsersPaged(map);
+            //获取总记录条数
+            int totalSize = uService.getUsersTotal(map);
+            //获取最大页码数
+            int maxPage = (totalSize%pageSize==0)?totalSize/pageSize:(totalSize/pageSize)+1;
+            //使用分页对象封装数据
+            Page<User> userPage = new Page<>();
+            userPage.setDatas(users);
+            userPage.setMaxPage(maxPage);
+            userPage.setPage(page);
+            userPage.setTotalSize(totalSize);
+            result.setData(userPage);//封装到result中返回给前台
+            result.setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setSuccess(false);
+        }
+        return result;
     }
 
 }
