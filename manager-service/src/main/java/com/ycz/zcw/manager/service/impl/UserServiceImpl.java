@@ -76,4 +76,34 @@ public class UserServiceImpl implements UserService {
         return uDao.queryUsersPaged(map);
     }
 
+    @Override
+    public void addUser(User user) {
+        uMapper.insertSelective(user);
+    }
+
+    @Override
+    public User queryUserById(int id) {
+        return uMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public void editUser(User user) {
+        uMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        uMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public User queryUserByName(String loginacct) {
+        return uDao.queryUserByName(loginacct);
+    }
+
+    @Override
+    public void deleteUsers(String userIds) {
+        uDao.deleteUsers(userIds);
+    }
+
 }

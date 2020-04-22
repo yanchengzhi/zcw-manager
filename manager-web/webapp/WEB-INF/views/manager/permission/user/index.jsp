@@ -20,8 +20,14 @@
 	table tbody td:nth-child(even){color:#C00;}
 	</style>
   </head>
-
   <body>
+  <!-- 如果在jsp页面中写Java代码，尽量放在一处，还是建议jsp中少用Java代码 -->
+  <%
+  //设置头部标题
+  pageContext.setAttribute("header_info", "用户维护"); 
+  //设置边侧栏当前页面的链接为高亮模式
+  pageContext.setAttribute("currentUrl", "permission/user/index");
+  %>
     <%@ include file="/WEB-INF/commons/common-header.jsp" %>
     <div class="container-fluid">
       <div class="row">
@@ -41,16 +47,17 @@
   </div>
   <button type="button" id="query_btn" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
 </form>
-<button type="button" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
-<button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='add.html'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
+<button type="button" class="btn btn-danger" style="float:right;margin-left:10px;" onclick="deleteUsers()"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
+<button type="button" class="btn btn-primary" style="float:right;" onclick="goToAdd()"><i class="glyphicon glyphicon-plus"></i> 新增</button>
 <br>
  <hr style="clear:both;">
           <div class="table-responsive">
-            <table class="table  table-bordered">
+          <form id="userForm">
+            <table class="table table-bordered">
               <thead>
                 <tr>
                   <th width="45" style="text-align: center">序号</th>
-				  <th width="40" style="text-align: center"><input type="checkbox"></th>
+				  <th width="40" style="text-align: center"><input type="checkbox" id="allSelBox"></th>
                   <th style="text-align: center">账号</th>
                   <th style="text-align: center">名称</th>
                   <th style="text-align: center">邮箱地址</th>
@@ -70,6 +77,7 @@
 
 			  </tfoot>
             </table>
+            </form>
           </div>
 			  </div>
 			</div>
@@ -103,6 +111,15 @@
 						}
 						queryPaged(1);
 					});
+				    //实现复选框的全选和反选功能
+				    $('#allSelBox').click(function(){
+				    	//获取表头复选框的状态
+				    	var flg = this.checked;
+				    	//将表格中的全部复选框状态保持与表头一致
+				    	$('#userData :checkbox').each(function(){
+				    		this.checked = flg;
+				    	}); 
+				    });
               });
             $("tbody .btn-success").click(function(){
                 window.location.href = "assignRole.html";
@@ -110,7 +127,6 @@
             $("tbody .btn-primary").click(function(){
                 window.location.href = "edit.html";
             });
-            
             //异步分页查询
             function queryPaged(pageNum){
             	var loadingIndex = null;
@@ -144,14 +160,14 @@
 							$.each(users,function(i,user){
 								tableContent+='<tr>';
 				                tableContent+='<td>'+(i+1)+'</td>';
-				                tableContent+='<td><input type="checkbox"></td>';
+				                tableContent+='<td><input type="checkbox" id="userId" value="'+user.id+'"></td>';
 				                tableContent+='<td>'+user.loginacct+'</td>';
 				                tableContent+='<td>'+user.username+'</td>';
 				                tableContent+='<td>'+user.email+'</td>';
 				                tableContent+='<td>';
 				                tableContent+='<button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>&nbsp;';
-				                tableContent+='<button type="button" class="btn btn-primary btn-xs"><i class=" glyphicon glyphicon-pencil"></i></button>&nbsp;';
-				                tableContent+='<button type="button" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></button>';
+				                tableContent+='<button type="button" class="btn btn-primary btn-xs" onclick="goToEdit('+user.id+')"><i class=" glyphicon glyphicon-pencil"></i></button>&nbsp;';
+				                tableContent+='<button type="button" class="btn btn-danger btn-xs" onclick="remove('+user.id+',\''+user.loginacct+'\')"><i class=" glyphicon glyphicon-remove"></i></button>';
 						        tableContent+='</td>';
 							    tableContent+='</tr>';
 							});
@@ -190,14 +206,111 @@
 							$('#userData').html(tableContent);//添加查询主内容
 							$('.pagination').html(pageContent);//添加页码导航条
     					}else{
-							layer.msg("查询失败！", {time:2000,icon:5,shift:6}, function() {
+							layer.msg("查询失败！", {time:2000,icon:5,shift:5}, function() {
 
 							});
     					}
     				}
     			});
             }
-        </script>
+            
+            //跳往添加页面
+            function goToAdd(){
+            	window.location.href="${APP_PATH}/permission/user/goToAdd";
+            }
+            
+            //跳往编辑页面
+            function goToEdit(id){
+            	window.location.href="${APP_PATH}/permission/user/goToEdit?id="+id;
+            }
+            
+            //单个删除用户
+            function remove(id,loginacct){
+    			layer.confirm("删除用户【" + loginacct + "】，是否继续？", {
+    				icon : 3,
+    				title : "提示"
+    			}, function(cindex) {
+    				//删除用户信息
+    				$.ajax({
+    					url : "${APP_PATH}/permission/user/delete",
+    					type : "POST",
+    					data : {
+    						"id" : id
+    					},
+    					success : function(result) {
+    						if (result.success) {
+    							layer.msg("删除成功！", {time:2000,icon:6,shift:5}, function() {
+
+    							});
+    							queryPaged(1);//删除成功重新查询第一页
+    						} else {//删除失败提示信息
+    							layer.msg("用户删除失败！", {
+    								time : 2000,
+    								icon : 5,
+    								shift : 5
+    							}, function() {
+
+    							});
+    						}
+    					}
+    				});
+    				layer.close(cindex);
+    			}, function(cindex) {
+    				layer.close(cindex);
+    			});
+            }
+            
+            //批量删除用户
+            function deleteUsers(){
+            	//获取选中的所有复选框
+            	var boxes = $('#userData :checked');
+            	if(boxes.length==0){
+					layer.msg("请勾选要删除的记录！", {time:2000,icon:5,shift:5}, function() {
+
+					});
+					return;
+            	}else{
+                	var userId = $('#userId').val();//获取选中的所有id
+                	var ids = "";
+                	for(var i=0;i<boxes.length;i++){
+                	    ids+=boxes[i].defaultValue+",";
+                	}
+    				layer.confirm("删除选中的"+boxes.length+"条用户信息，是否继续？", {
+    					icon : 3,
+    					title : "提示"
+    				}, function(cindex) {
+    					//删除用户信息
+    					$.ajax({
+    						url : "${APP_PATH}/permission/user/deleteUsers",
+    						type : "POST",
+    						data : {
+    							"ids":ids
+    						},
+    						success : function(result) {
+    							if (result.success) {
+        							layer.msg("删除成功！", {time:2000,icon:6,shift:5}, function() {
+
+        							});
+    								queryPaged(1);//删除成功重新查询第一页
+    							} else {//删除失败提示信息
+    								layer.msg("用户删除失败！", {
+    									time : 2000,
+    									icon : 5,
+    									shift : 5
+    								}, function() {
+
+    								});
+    							}
+    						}
+    					});
+    					layer.close(cindex);
+    				}, function(cindex) {
+    					layer.close(cindex);
+    				});
+            	}
+            }
+        </script>  
+      <%@ include file="/WEB-INF/commons/same-js.jsp" %>
   </body>
 </html>
     

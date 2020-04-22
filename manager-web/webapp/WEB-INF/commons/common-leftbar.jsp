@@ -10,7 +10,7 @@
 					<!-- 遍历菜单 -->
 					<c:forEach items="${userMenus}" var="pMenu">
 					   <li class="list-group-item tree-closed">
-					      <span><i class="${pMenu.icon}"></i>${pMenu.name}<span class="badge" style="float:right">${pMenu.childs.size()}</span></span>
+					      <span><i class="${pMenu.icon}"></i>&nbsp;${pMenu.name}<span class="badge" style="float:right">${pMenu.childs.size()}</span></span>
 					      <ul style="margin-top:10px;display:none;">
 					         <c:forEach items="${pMenu.childs}" var="cMenu">
 					           <li style="height:30px;">

@@ -8,7 +8,10 @@
        select count(*) from t_user
        <where>
           <if test="queryText!=null">
-             and username like concat('%',#{queryText},'%')
+             and loginacct like concat('%',#{queryText},'%')
+          </if>
+          <if test="queryText!=null">
+             or username like concat('%',#{queryText},'%')
           </if>
           <if test="queryText!=null">
              or email like concat('%',#{queryText},'%')
@@ -21,7 +24,10 @@
        select * from t_user
        <where>
           <if test="queryText!=null">
-             and username like concat('%',#{queryText},'%')
+             and loginacct like concat('%',#{queryText},'%')
+          </if>
+          <if test="queryText!=null">
+             or username like concat('%',#{queryText},'%')
           </if>
           <if test="queryText!=null">
              or email like concat('%',#{queryText},'%')
@@ -30,4 +36,9 @@
        order by createtime desc
        limit #{offset},#{pageSize}
     </select>
+    
+    <!-- 批量删除 -->
+    <delete id="deleteUsers" parameterType="String">
+      delete from t_user where id in (${value})
+    </delete>
 </mapper>
