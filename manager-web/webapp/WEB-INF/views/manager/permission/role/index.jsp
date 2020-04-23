@@ -24,9 +24,9 @@
   <!-- 如果在jsp页面中写Java代码，尽量放在一处，还是建议jsp中少用Java代码 -->
   <%
   //设置头部标题
-  pageContext.setAttribute("header_info", "用户维护"); 
+  pageContext.setAttribute("header_info", "角色维护"); 
   //设置边侧栏当前页面的链接为高亮模式
-  pageContext.setAttribute("currentUrl", "permission/user/index");
+  pageContext.setAttribute("currentUrl", "permission/role/index");
   %>
     <%@ include file="/WEB-INF/commons/common-header.jsp" %>
     <div class="container-fluid">
@@ -47,7 +47,7 @@
   </div>
   <button type="button" id="query_btn" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
 </form>
-<button type="button" class="btn btn-danger" style="float:right;margin-left:10px;" onclick="deleteUsers()"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
+<button type="button" class="btn btn-danger" style="float:right;margin-left:10px;" onclick="deleteRoles()"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
 <button type="button" class="btn btn-primary" style="float:right;" onclick="goToAdd()"><i class="glyphicon glyphicon-plus"></i> 新增</button>
 <br>
  <hr style="clear:both;">
@@ -58,13 +58,11 @@
                 <tr>
                   <th width="45" style="text-align: center">序号</th>
 				  <th width="40" style="text-align: center"><input type="checkbox" id="allSelBox"></th>
-                  <th style="text-align: center">账号</th>
-                  <th style="text-align: center">名称</th>
-                  <th style="text-align: center">邮箱地址</th>
-                  <th width="100" style="text-align: center">操作</th>
+                  <th>名称</th>
+                  <th width="200" style="text-align: center">操作</th>
                 </tr>
               </thead>
-              <tbody style="text-align: center" id="userData">
+              <tbody id="roleData">
 
               </tbody>
               
@@ -139,7 +137,7 @@
     			}
     			//ajax异步请求
     			$.ajax({
-    				url:"${APP_PATH}/permission/user/list",
+    				url:"${APP_PATH}/permission/role/list",
     				type:"POST",
     				data:jsonData,
     				beforeSend:function(){
@@ -154,20 +152,18 @@
 							var tableContent = "";
 							var pageContent = "";
 							//从后台获取数据
-							var userPage = result.data;
-							var users = userPage.datas;
+							var rolePage = result.data;
+							var roles = rolePage.datas;
 							//遍历对象
-							$.each(users,function(i,user){
+							$.each(roles,function(i,role){
 								tableContent+='<tr>';
-				                tableContent+='<td>'+(i+1)+'</td>';
-				                tableContent+='<td><input type="checkbox" id="userId" value="'+user.id+'"></td>';
-				                tableContent+='<td>'+user.loginacct+'</td>';
-				                tableContent+='<td>'+user.username+'</td>';
-				                tableContent+='<td>'+user.email+'</td>';
-				                tableContent+='<td>';
-				                tableContent+='<button type="button" class="btn btn-success btn-xs"onclick="goAssignPage('+user.id+')" ><i class=" glyphicon glyphicon-check"></i></button>&nbsp;';
-				                tableContent+='<button type="button" class="btn btn-primary btn-xs" onclick="goToEdit('+user.id+')"><i class=" glyphicon glyphicon-pencil"></i></button>&nbsp;';
-				                tableContent+='<button type="button" class="btn btn-danger btn-xs" onclick="remove('+user.id+',\''+user.loginacct+'\')"><i class=" glyphicon glyphicon-remove"></i></button>';
+				                tableContent+='<td style="text-align:center">'+(i+1)+'</td>';
+				                tableContent+='<td style="text-align:center"><input type="checkbox" id="roleId" value="'+role.id+'"></td>';
+				                tableContent+='<td>'+role.name+'</td>';
+				                tableContent+='<td style="text-align:center">';
+				                tableContent+='<button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>&nbsp;&nbsp;&nbsp;';
+				                tableContent+='<button type="button" class="btn btn-primary btn-xs" onclick="goToEdit('+role.id+')"><i class=" glyphicon glyphicon-pencil"></i></button>&nbsp;&nbsp;&nbsp;';
+				                tableContent+='<button type="button" class="btn btn-danger btn-xs" onclick="remove('+role.id+',\''+role.name+'\')"><i class=" glyphicon glyphicon-remove"></i></button>';
 						        tableContent+='</td>';
 							    tableContent+='</tr>';
 							});
@@ -184,7 +180,7 @@
 										+ (pageNum - 1) + ')">上一页</a></li>';
 							}
 							//显示页码数
-							for (var i = 1; i <= userPage.maxPage; i++) {
+							for (var i = 1; i <= rolePage.maxPage; i++) {
 								//添加当前页样式  		    
 								if (i == pageNum) {
 									pageContent += '<li class="active"><a href="#">'
@@ -195,15 +191,15 @@
 								}
 							}
 							//下一页
-							if (pageNum < userPage.maxPage) {
+							if (pageNum < rolePage.maxPage) {
 								pageContent += '<li><a href="#" onclick="queryPaged('
 										+ (pageNum + 1) + ')">下一页</a></li>';
 							} else {
 								pageContent += '<li class="disabled"><a href="#">下一页</a></li>';
 							}
 							//末页
-							pageContent += '<li><a href="#" onclick="queryPaged('+userPage.maxPage+')">末页</a></li>';
-							$('#userData').html(tableContent);//添加查询主内容
+							pageContent += '<li><a href="#" onclick="queryPaged('+rolePage.maxPage+')">末页</a></li>';
+							$('#roleData').html(tableContent);//添加查询主内容
 							$('.pagination').html(pageContent);//添加页码导航条
     					}else{
 							layer.msg("查询失败！", {time:2000,icon:5,shift:5}, function() {
@@ -216,28 +212,23 @@
             
             //跳往添加页面
             function goToAdd(){
-            	window.location.href="${APP_PATH}/permission/user/goToAdd";
+            	window.location.href="${APP_PATH}/permission/role/goToAdd";
             }
             
             //跳往编辑页面
             function goToEdit(id){
-            	window.location.href="${APP_PATH}/permission/user/goToEdit?id="+id;
+            	window.location.href="${APP_PATH}/permission/role/goToEdit?id="+id;
             }
             
-            //跳往角色分配页面
-            function goAssignPage(id){
-            	window.location.href="${APP_PATH}/permission/user/goAssign?id="+id;
-            }
-            
-            //单个删除用户
-            function remove(id,loginacct){
-    			layer.confirm("删除用户【" + loginacct + "】，是否继续？", {
+            //单个删除角色
+            function remove(id,name){
+    			layer.confirm("删除角色【" + name + "】，是否继续？", {
     				icon : 3,
     				title : "提示"
     			}, function(cindex) {
     				//删除用户信息
     				$.ajax({
-    					url : "${APP_PATH}/permission/user/delete",
+    					url : "${APP_PATH}/permission/role/delete",
     					type : "POST",
     					data : {
     						"id" : id
@@ -265,17 +256,17 @@
     			});
             }
             
-            //批量删除用户
-            function deleteUsers(){
+            //批量删除角色
+            function deleteRoles(){
             	//获取选中的所有复选框
-            	var boxes = $('#userData :checked');
+            	var boxes = $('#roleData :checked');
             	if(boxes.length==0){
 					layer.msg("请勾选要删除的记录！", {time:2000,icon:5,shift:5}, function() {
 
 					});
 					return;
             	}else{
-                	var userId = $('#userId').val();//获取选中的所有id
+                	var roleId = $('#roleId').val();//获取选中的所有id
                 	var ids = "";
                 	for(var i=0;i<boxes.length;i++){
                 	    ids+=boxes[i].defaultValue+",";
@@ -286,7 +277,7 @@
     				}, function(cindex) {
     					//删除用户信息
     					$.ajax({
-    						url : "${APP_PATH}/permission/user/deleteUsers",
+    						url : "${APP_PATH}/permission/role/deleteRoles",
     						type : "POST",
     						data : {
     							"ids":ids

@@ -29,4 +29,10 @@ public interface UserService {
 
     void deleteUsers(String userIds);//批量删除用户
 
+    List<Integer> queryRoleIdsByUserId(Integer id);//查询用户已分配角色的ID
+
+    void insertUserRoles(Map<String, Object> map);//为用户分配角色
+
+    void deleteUserRoles(Map<String, Object> map);//取消用户的角色
+
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ycz.zcw.manager.dao.RoleDao">
+    <!-- 查询总的记录条数 -->
+    <select id="getRolesTotal" resultType="int" parameterType="map">
+       select count(*) from t_role
+       <where>
+          <if test="queryText!=null">
+             and name like concat('%',#{queryText},'%')
+          </if>
+       </where>
+    </select>
+    
+    <!-- 分页查询用户 -->
+    <select id="queryRolesPaged" resultType="com.ycz.zcw.manager.pojo.Role" parameterType="map">
+       select * from t_role
+       <where>
+          <if test="queryText!=null">
+             and name like concat('%',#{queryText},'%')
+          </if>
+       </where>
+       order by createtime desc
+       limit #{offset},#{pageSize}
+    </select>
+    
+    <!-- 批量删除 -->
+    <delete id="deleteRoles" parameterType="String">
+      delete from t_role where id in (${value})
+    </delete>
+</mapper>

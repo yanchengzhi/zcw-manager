@@ -41,4 +41,21 @@
     <delete id="deleteUsers" parameterType="String">
       delete from t_user where id in (${value})
     </delete>
+    
+    <!-- 为用户分配角色 -->
+    <insert id="insertUserRoles" parameterType="map">
+        insert into t_user_role(userid,roleid) values
+         <!-- 插入多条记录使用动态SQL遍历来处理 -->
+         <foreach collection="assignIds" item="roleid" separator=",">
+           (#{userid},#{roleid})
+         </foreach>
+    </insert>
+    
+    <!-- 取消用户的角色 -->
+    <delete id="deleteUserRoles" parameterType="map">
+       delete from t_user_role where userid=#{userid} and roleid in
+       <foreach collection="unAssignIds" item="roleid" open="(" close=")" separator=",">
+         #{roleid}
+       </foreach>
+    </delete>
 </mapper>

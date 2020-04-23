@@ -1,6 +1,7 @@
 package com.ycz.zcw.manager.controller.permission;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ycz.project.MD5Util;
 import com.ycz.zcw.manager.pojo.AjaxResult;
 import com.ycz.zcw.manager.pojo.Page;
+import com.ycz.zcw.manager.pojo.Role;
 import com.ycz.zcw.manager.pojo.User;
 import com.ycz.zcw.manager.pojo.constants.Constants;
+import com.ycz.zcw.manager.service.RoleService;
 import com.ycz.zcw.manager.service.UserService;
 
 /**
@@ -36,6 +39,9 @@ public class UserController {
     
     @Autowired
     private UserService uService;
+    
+    @Autowired
+    private RoleService rService;
     
     /**
      * 
@@ -248,6 +254,85 @@ public class UserController {
         try {
             String userIds = ids.substring(0,ids.length()-1);
             uService.deleteUsers(userIds);
+            result.setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setSuccess(false);
+        }
+        return result;
+    }
+    
+    /**
+     * 
+     * @Description (跳往角色分配页面)
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping("goAssign")
+    public String goAssign(Integer id,Model model){
+        //查询要分配角色的用户
+        User user = uService.queryUserById(id);
+        model.addAttribute("user",user);
+        //查询系统的所有的角色
+        List<Role> roles = rService.getAllRoles();
+        List<Role> assignRoles = new ArrayList<>();//存已分配角色的容器
+        List<Role> unAssignRoles = new ArrayList<>();//存未分配角色的容器
+        //获取用户已分配所有角色的id
+        List<Integer> roleIds = uService.queryRoleIdsByUserId(id);
+        for(Role r:roles) {
+            if(roleIds.contains(r.getId())) {
+                assignRoles.add(r);
+            }else {
+                unAssignRoles.add(r);
+            }
+        }
+        //将已分配的角色和未分配的角色存到页面中
+        model.addAttribute("assignRoles",assignRoles);
+        model.addAttribute("unAssignRoles",unAssignRoles);
+        return "manager/permission/user/assign_role";
+    }
+    
+    /**
+     * 
+     * @Description (为用户分配角色)
+     * @param userid 用户ID
+     * @param assignIds 要分配的角色ID 
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("assignRoles")
+    public Object assignRoles(Integer userid,Integer []assignIds) {
+        AjaxResult result = new AjaxResult();
+        try {
+            Map<String,Object> map = new HashMap<>();
+            map.put("userid", userid);
+            map.put("assignIds", assignIds);
+            uService.insertUserRoles(map);
+            result.setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setSuccess(false);
+        }
+        return result;
+    }
+    
+    /**
+     * 
+     * @Description (取消用户的角色)
+     * @param userid
+     * @param unAssignIds
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("cancelRoles")
+    public Object cancelRoles(Integer userid,Integer []unAssignIds) {
+        AjaxResult result = new AjaxResult();
+        try {
+            Map<String,Object> map = new HashMap<>();
+            map.put("userid", userid);
+            map.put("unAssignIds", unAssignIds);
+            uService.deleteUserRoles(map);
             result.setSuccess(true);
         } catch (Exception e) {
             e.printStackTrace();

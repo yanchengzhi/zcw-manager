@@ -19,6 +19,7 @@
 	}
 	</style>
   </head>
+  <%pageContext.setAttribute("header_info", "用户维护"); %>
   <body>
   <%@ include file="/WEB-INF/commons/common-header.jsp" %>
     <div class="container-fluid">

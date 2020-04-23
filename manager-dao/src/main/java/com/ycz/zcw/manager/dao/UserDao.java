@@ -18,4 +18,11 @@ public interface UserDao {
 
     void deleteUsers(String userIds);
 
+    @Select("select roleid from t_user_role where userid=#{userid}")
+    List<Integer> queryRoleIdsByUserId(Integer id);
+
+    void insertUserRoles(Map<String, Object> map);
+
+    void deleteUserRoles(Map<String, Object> map);
+
 }
