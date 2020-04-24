@@ -29,4 +29,5 @@
     <delete id="deleteRoles" parameterType="String">
       delete from t_role where id in (${value})
     </delete>
+    
 </mapper>

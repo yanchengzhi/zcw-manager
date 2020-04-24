@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ycz.zcw.manager.dao.PermissionDao;
 import com.ycz.zcw.manager.dao.RoleDao;
 import com.ycz.zcw.manager.dao.RoleMapper;
 import com.ycz.zcw.manager.pojo.Role;
@@ -19,6 +20,9 @@ public class RoleServiceImpl implements RoleService {
     
     @Autowired
     private RoleDao rDao;
+    
+    @Autowired
+    private PermissionDao pDao;
 
     @Override
     public List<Role> queryRolesPaged(Map<String, Object> map) {
@@ -63,6 +67,14 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> getAllRoles() {
         return rMapper.selectByExample(null);
+    }
+
+    @Override
+    public void insertRolePermission(Map<String, Object> map) {
+        //先删除以前的分配
+        pDao.deleteRolePermissions(map);
+        //然后再重新分配
+        pDao.insertRolePermissions(map);
     }
 
 }

@@ -236,6 +236,7 @@ public class UserController {
             result.setSuccess(true);
         } catch (Exception e) {
             e.printStackTrace();
+            result.setData("无法删除！该用户下存在角色！");
             result.setSuccess(false);
         }
         return result;

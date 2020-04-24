@@ -25,4 +25,6 @@ public interface RoleService {
 
     List<Role> getAllRoles();//获取所有角色
 
+    void insertRolePermission(Map<String, Object> map);//为角色添加权限
+
 }

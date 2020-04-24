@@ -186,6 +186,7 @@ public class RoleController {
             result.setSuccess(true);
         } catch (Exception e) {
             e.printStackTrace();
+            result.setData("无法删除！该角色下存在权限！");
             result.setSuccess(false);
         }
         return result;
@@ -204,6 +205,23 @@ public class RoleController {
         try {
             String roleIds = ids.substring(0,ids.length()-1);
             rService.deleteRoles(roleIds);
+            result.setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setSuccess(false);
+        }
+        return result;
+    }
+    
+    @ResponseBody
+    @RequestMapping("doAssign")
+    public Object doAssign(Integer roleid,Integer []permissionIds) {
+        AjaxResult result = new AjaxResult();
+        try {
+            Map<String,Object> map = new HashMap<>();
+            map.put("roleid", roleid);
+            map.put("permissionIds", permissionIds);
+            rService.insertRolePermission(map);
             result.setSuccess(true);
         } catch (Exception e) {
             e.printStackTrace();

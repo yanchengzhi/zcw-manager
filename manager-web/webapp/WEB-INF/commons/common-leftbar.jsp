@@ -10,9 +10,9 @@
 					<!-- 遍历菜单 -->
 					<c:forEach items="${userMenus}" var="pMenu">
 					   <li class="list-group-item tree-closed">
-					      <span><i class="${pMenu.icon}"></i>&nbsp;${pMenu.name}<span class="badge" style="float:right">${pMenu.childs.size()}</span></span>
+					      <span><i class="${pMenu.icon}"></i>&nbsp;${pMenu.name}<span class="badge" style="float:right">${pMenu.children.size()}</span></span>
 					      <ul style="margin-top:10px;display:none;">
-					         <c:forEach items="${pMenu.childs}" var="cMenu">
+					         <c:forEach items="${pMenu.children}" var="cMenu">
 					           <li style="height:30px;">
 								  <a href="${APP_PATH}/${cMenu.url}"><i class="${cMenu.icon}"></i> ${cMenu.name}</a> 
 							   </li>

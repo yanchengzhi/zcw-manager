@@ -1,5 +1,6 @@
 package com.ycz.zcw.manager.pojo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Permission {
@@ -14,15 +15,19 @@ public class Permission {
 
     private String url;
     
-    private List<Permission> childs;//顶级菜单的所有一级子菜单
+    private List<Permission> children = new ArrayList<>();//顶级菜单的所有一级子菜单
     
-    public List<Permission> getChilds() {
-        return childs;
+    private boolean open = true;//打开叶子的开关，默认为展开
+    
+    private boolean checked = false;//复选框的勾选状态，默认是不勾选的
+    
+    public List<Permission> getChildren() {
+        return children;
     }
 
     
-    public void setChilds(List<Permission> childs) {
-        this.childs = childs;
+    public void setChildren(List<Permission> children) {
+        this.children = children;
     }
 
     public Integer getId() {
@@ -64,4 +69,28 @@ public class Permission {
     public void setUrl(String url) {
         this.url = url == null ? null : url.trim();
     }
+
+
+    
+    public boolean isOpen() {
+        return open;
+    }
+
+
+    
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    
+    public boolean isChecked() {
+        return checked;
+    }
+
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+    
+    
 }

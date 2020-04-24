@@ -249,7 +249,7 @@
     							});
     							queryPaged(1);//删除成功重新查询第一页
     						} else {//删除失败提示信息
-    							layer.msg("用户删除失败！", {
+    							layer.msg(result.data, {
     								time : 2000,
     								icon : 5,
     								shift : 5

@@ -19,7 +19,7 @@
 	</style>
   </head>
   <%
-  pageContext.setAttribute("header_info", "用户角色分配"); 
+  pageContext.setAttribute("header_info", "用户维护"); 
   pageContext.setAttribute("currentUrl", "permission/user/index");
   %>
   <body>

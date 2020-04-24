@@ -10,6 +10,8 @@
     <meta name="author" content="">
     <title>用户页面</title>
     <%@ include file="/WEB-INF/commons/common-css.jsp" %>
+    <!-- zTree需要的样式表 -->
+    <link rel="stylesheet" href="${APP_PATH}/static/ztree/zTreeStyle.css">
 	<link rel="stylesheet" href="${APP_PATH}/static/css/main.css">
 	<style>
 	.tree li {
@@ -82,7 +84,25 @@
         </div>
       </div>
     </div>
+  <div class="modal fade" id="permissionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width:650px">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">分配权限</h4>
+      </div>
+      <div class="modal-body">
+         <ul id="permissionTree" class="ztree"></ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" onclick="doAssign()">分配权限</button>
+      </div>
+    </div>
+  </div>
+</div>
     <%@ include file="/WEB-INF/commons/common-js.jsp" %>
+    <script src="${APP_PATH}/static/ztree/jquery.ztree.all-3.5.min.js"></script>
     <script type="text/javascript" src="${APP_PATH}/static/layer/layer.js"></script>
     <script type="text/javascript">
     var likeFlag = false;//模糊查询是否开启的标志
@@ -98,6 +118,7 @@
 					}
 				});
 				    queryPaged(1);//查询第一页
+				    
 					//实现模糊查询功能
 					$('#query_btn').click(function() {
 						//获取文本框的值
@@ -119,12 +140,6 @@
 				    	}); 
 				    });
               });
-            $("tbody .btn-success").click(function(){
-                window.location.href = "assignRole.html";
-            });
-            $("tbody .btn-primary").click(function(){
-                window.location.href = "edit.html";
-            });
             //异步分页查询
             function queryPaged(pageNum){
             	var loadingIndex = null;
@@ -161,7 +176,7 @@
 				                tableContent+='<td style="text-align:center"><input type="checkbox" id="roleId" value="'+role.id+'"></td>';
 				                tableContent+='<td>'+role.name+'</td>';
 				                tableContent+='<td style="text-align:center">';
-				                tableContent+='<button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>&nbsp;&nbsp;&nbsp;';
+				                tableContent+='<button type="button" class="btn btn-success btn-xs assignBtn" onclick="assignPer('+role.id+')"><i class="glyphicon glyphicon-check"></i></button>&nbsp;&nbsp;&nbsp;';
 				                tableContent+='<button type="button" class="btn btn-primary btn-xs" onclick="goToEdit('+role.id+')"><i class=" glyphicon glyphicon-pencil"></i></button>&nbsp;&nbsp;&nbsp;';
 				                tableContent+='<button type="button" class="btn btn-danger btn-xs" onclick="remove('+role.id+',\''+role.name+'\')"><i class=" glyphicon glyphicon-remove"></i></button>';
 						        tableContent+='</td>';
@@ -220,6 +235,89 @@
             	window.location.href="${APP_PATH}/permission/role/goToEdit?id="+id;
             }
             
+            //js中弹出模态框
+            var temp = null;
+            function assignPer(id){
+            	temp = id;
+			    //页面加载完成后初始化树形结构
+			    var setting={
+			    	//异步请求数据
+			    	async:{
+			    		url:"${APP_PATH}/permission/permission/loadAssignData?roleid="+id,
+			    		enable:true,
+			    		autoParam:["id","name=n","level=lv"]
+			    	},
+			    	//增加复选框
+			    	check:{
+			    		enable:true
+			    	},
+			    	//禁用url的跳转功能，用data容器包裹一个key，在key里将链接的属性名称改为表中不存在的
+			    	//注意，直接使用key是不生效的，必选要嵌套在data里
+			    	data:{
+			    		key:{
+			    		  url:"xxurl"
+			    		}
+			    	},
+			    	view:{
+			    		//不支持多选
+			    		selectedMulti: false,
+			    		//改变节点图标
+						addDiyDom: function(treeId, treeNode){
+							var icoObj = $("#" + treeNode.tId + "_ico"); // tId = permissionTree_1, $("#permissionTree_1_ico")
+							if ( treeNode.icon ) {
+								icoObj.removeClass("button ico_docu ico_open").addClass(treeNode.icon).css("background","");
+							}
+	                        
+						}
+			    	}
+			    };
+			    
+			  //初始化树形结构数据
+			   $.fn.zTree.init($('#permissionTree'),setting);
+			    //显示模态框出来
+            	$('#permissionModal').modal('show');
+            }
+            
+            //执行分配
+            function doAssign(){
+            	//获取树对象
+            	var treeObj = $.fn.zTree.getZTreeObj("permissionTree");
+            	//获取选中的节点
+            	var nodes = treeObj.getCheckedNodes(true);
+            	if(nodes.length==0){
+            		layer.msg('请勾选要分配的权限！',{time:2000,icon:5,shift:5},function(){
+            			
+            		});
+            		return;
+            	}
+            	var d = "roleid="+temp;
+            	$.each(nodes,function(i,node){
+            		d+="&permissionIds="+node.id;
+            	});
+            	//发送异步请求分配权限
+            	$.ajax({
+            		url:"${APP_PATH}/permission/role/doAssign",
+            		type:"post",
+            		data:d,
+            		success:function(result){
+            			if(result.success){
+                    		layer.msg('许可分配成功！',{time:2000,icon:6,shift:5},function(){
+                    			
+                    		});
+            			}else{
+                    		layer.msg('许可分配失败！',{time:2000,icon:5,shift:5},function(){
+                    			
+                    		});
+            			}
+            		}
+            	});
+            }
+            
+            //跳往角色权限分配页面
+            /*
+            function goAssignPage(id){
+            	window.location.href="${APP_PATH}/permission/role/goAssign?id="+id;
+            }*/
             //单个删除角色
             function remove(id,name){
     			layer.confirm("删除角色【" + name + "】，是否继续？", {
@@ -240,7 +338,7 @@
     							});
     							queryPaged(1);//删除成功重新查询第一页
     						} else {//删除失败提示信息
-    							layer.msg("用户删除失败！", {
+    							layer.msg(result.data, {
     								time : 2000,
     								icon : 5,
     								shift : 5
@@ -305,6 +403,7 @@
     				});
             	}
             }
+            
         </script>  
       <%@ include file="/WEB-INF/commons/same-js.jsp" %>
   </body>
