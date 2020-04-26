@@ -239,6 +239,8 @@ table tbody td:nth-child(even) {
 
 		//添加节点
 		function addNode(id) {
+			$('#info_name').text("");
+			$('#name').parent().removeClass('has-error').addClass('has-success');
 			//弹出模态框
 			$('#addNodeModal').modal('show');
 			//查出父菜单
@@ -260,6 +262,8 @@ table tbody td:nth-child(even) {
 			
 			//校验显示提示信息
 			$('#name').blur(function(){
+				$('#info_name').text("");
+				$('#name').parent().removeClass('has-error').addClass('has-success');
 				var name = $('#name').val();
 				//先判断是否为空
 				if(name==""){

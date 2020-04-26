@@ -4,6 +4,8 @@
   <resultMap id="BaseResultMap" type="com.ycz.zcw.manager.pojo.TType">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="createtime" jdbcType="VARCHAR" property="createtime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -64,7 +66,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name
+    id, name,introduction,createtime
   </sql>
   <select id="selectByExample" parameterType="com.ycz.zcw.manager.pojo.TTypeExample" resultMap="BaseResultMap">
     select
@@ -86,6 +88,26 @@
     from t_type
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <!-- 分页查询 -->
+  <select id="queryTypesPaged" resultType="com.ycz.zcw.manager.pojo.TType" parameterType="map">
+     select * from t_type
+     <where>
+        <if test="queryText!=null">
+          and name like concat('%',#{queryText},'%')
+        </if>
+     </where>
+     order by createtime desc
+     limit #{offset},#{pageSize}
+  </select>
+  <!-- 获取总的记录条数 -->
+  <select id="getTypesTotal" resultType="int" parameterType="map">
+     select count(*) from t_type
+     <where>
+        <if test="queryText!=null">
+          and name like concat('%',#{queryText},'%')
+        </if>
+     </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_type
     where id = #{id,jdbcType=INTEGER}
@@ -96,9 +118,13 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
+  <!-- 批量删除 -->
+  <delete id="deleteTypes" parameterType="String">
+    delete from t_type where id in (${value})
+  </delete>
   <insert id="insert" parameterType="com.ycz.zcw.manager.pojo.TType">
-    insert into t_type (id, name)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})
+    insert into t_type (id, name,introduction,createtime)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},#{introduction,jdbcType=VARCHAR},#{createtime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ycz.zcw.manager.pojo.TType">
     insert into t_type
@@ -109,6 +135,12 @@
       <if test="name != null">
         name,
       </if>
+      <if test="introduction != null">
+        introduction,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -117,6 +149,12 @@
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
+      <if test="introduction != null">
+        #{introduction,jdbcType=VARCHAR},
+      </if> 
+      <if test="createtime != null">
+        #{createtime,jdbcType=VARCHAR},
+      </if>     
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.ycz.zcw.manager.pojo.TTypeExample" resultType="java.lang.Long">
@@ -134,6 +172,12 @@
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
+      <if test="record.introduction != null">
+        introduction = #{record.introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createtime != null">
+        introduction = #{record.createtime,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -142,7 +186,8 @@
   <update id="updateByExample" parameterType="map">
     update t_type
     set id = #{record.id,jdbcType=INTEGER},
-      name = #{record.name,jdbcType=VARCHAR}
+      name = #{record.name,jdbcType=VARCHAR},
+      introduction = #{introduction,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -153,12 +198,16 @@
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="introduction != null">
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.ycz.zcw.manager.pojo.TType">
     update t_type
-    set name = #{name,jdbcType=VARCHAR}
+    set name = #{name,jdbcType=VARCHAR},
+    introduction = #{introduction,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
