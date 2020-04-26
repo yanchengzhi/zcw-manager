@@ -12,4 +12,17 @@ public interface PermissionService {
 
     List<Permission> getAll();//获取所有节点，未组合形式
 
+    Permission queryPermissionById(Integer id);//按照ID查询菜单
+
+    Permission queryPermissionByName(String name);//按名称查询菜单
+
+    void addPermission(Permission permission);//添加菜单
+
+    List<Permission> queryTwoMenus();//获取所有二级菜单
+
+    void editPermission(Permission permission);//修改权限信息
+
+    void deleteNode(Integer id);//删除菜单
+
+
 }

@@ -58,4 +58,13 @@
          #{roleid}
        </foreach>
     </delete>
+    
+    <!-- 多表连接查询 -->
+    <select id="queryPermissionsById" resultType="com.ycz.zcw.manager.pojo.Permission" parameterType="int">
+       select distinct p.id,p.pid,p.name,p.icon,p.url from t_user_role ur
+         inner join t_user u on u.id = ur.userid
+         inner join t_role_permission rp on rp.roleid = ur.roleid
+         inner join t_permission p on p.id = rp.permissionid
+         where u.id=#{userid}
+    </select>
 </mapper>

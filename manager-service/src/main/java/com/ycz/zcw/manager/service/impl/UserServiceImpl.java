@@ -11,8 +11,10 @@ import com.ycz.project.MD5Util;
 import com.ycz.project.MyStringUtil;
 import com.ycz.zcw.manager.dao.UserDao;
 import com.ycz.zcw.manager.dao.UserMapper;
+import com.ycz.zcw.manager.pojo.Permission;
 import com.ycz.zcw.manager.pojo.User;
 import com.ycz.zcw.manager.pojo.UserExample;
+import com.ycz.zcw.manager.pojo.UserExample.Criteria;
 import com.ycz.zcw.manager.service.UserService;
 
 @Service
@@ -28,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public User queryUser(User user) {
         //查询数据库中是否存在该用户
         UserExample example = new UserExample();
-        com.ycz.zcw.manager.pojo.UserExample.Criteria criteria = example.createCriteria();
+        Criteria criteria = example.createCriteria();
         //设置查询条件
         criteria.andLoginacctEqualTo(user.getLoginacct());//查询登录名
         criteria.andUserpswdEqualTo(MD5Util.digest(user.getUserpswd()));//密码查询
@@ -119,6 +121,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserRoles(Map<String, Object> map) {
         uDao.deleteUserRoles(map);
+    }
+
+    @Override
+    public List<Permission> queryPermissionsById(Integer id) {
+        return uDao. queryPermissionsById(id);
     }
 
 }

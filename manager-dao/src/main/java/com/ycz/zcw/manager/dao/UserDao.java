@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Select;
 
+import com.ycz.zcw.manager.pojo.Permission;
 import com.ycz.zcw.manager.pojo.User;
 
 public interface UserDao {
@@ -24,5 +25,7 @@ public interface UserDao {
     void insertUserRoles(Map<String, Object> map);
 
     void deleteUserRoles(Map<String, Object> map);
+
+    List<Permission> queryPermissionsById(Integer id);
 
 }

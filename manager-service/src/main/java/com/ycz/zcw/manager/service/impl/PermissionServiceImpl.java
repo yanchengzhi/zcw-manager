@@ -63,4 +63,34 @@ public class PermissionServiceImpl implements PermissionService {
         return pMapper.selectByExample(null);
     }
 
+    @Override
+    public Permission queryPermissionById(Integer id) {
+        return pDao.queryPermissionById(id);
+    }
+
+    @Override
+    public Permission queryPermissionByName(String name) {
+        return pDao.queryPermissionByName(name);
+    }
+
+    @Override
+    public void addPermission(Permission permission) {
+        pMapper.insertSelective(permission);
+    }
+
+    @Override
+    public List<Permission> queryTwoMenus() {
+        return pDao.queryTwoMenus();
+    }
+
+    @Override
+    public void editPermission(Permission permission) {
+        pMapper.updateByPrimaryKeySelective(permission);
+    }
+
+    @Override
+    public void deleteNode(Integer id) {
+      pMapper.deleteByPrimaryKey(id);  
+    }
+
 }

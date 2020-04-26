@@ -45,6 +45,19 @@ public class UserController {
     
     /**
      * 
+     * @Description (退出登录)
+     * @param session
+     * @return
+     */
+    @RequestMapping("logout")
+    public String logout(HttpSession session) {
+        session.invalidate();//会话域失效
+        return "redirect:/login.jsp";//重定向到登录页面
+    }
+    
+    
+    /**
+     * 
      * @Description (用户注册)
      * @param user
      * @return

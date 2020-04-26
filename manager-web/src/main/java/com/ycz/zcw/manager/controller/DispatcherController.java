@@ -1,6 +1,9 @@
 package com.ycz.zcw.manager.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,8 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ycz.zcw.manager.pojo.Permission;
+import com.ycz.zcw.manager.pojo.User;
 import com.ycz.zcw.manager.pojo.constants.Constants;
 import com.ycz.zcw.manager.service.PermissionService;
+import com.ycz.zcw.manager.service.RoleService;
+import com.ycz.zcw.manager.service.UserService;
 
 /**
  * 
@@ -24,7 +30,13 @@ import com.ycz.zcw.manager.service.PermissionService;
 public class DispatcherController {
     
     @Autowired
+    private UserService uService;
+    
+    @Autowired
     private PermissionService pService;
+    
+    @Autowired
+    private RoleService rService;
     
     /**
      * 
@@ -34,17 +46,29 @@ public class DispatcherController {
     @RequestMapping(value="/main.html")
     public String toMainPage(HttpSession session) {
         //从session域中获取登录的用户对象
-        Object obj = session.getAttribute(Constants.LOGIN_USER);
-        if(obj==null) {//为空则用户未发起会话或会话过期
+        User user = (User) session.getAttribute(Constants.LOGIN_USER);
+        if(user==null) {//为空则用户未发起会话或会话过期
             return "redirect:login.jsp";//重定向到登录页面
         }else {//不为空跳转到主页
-            //session中没有存菜单时（可能被用户清除）
-            if(session.getAttribute(Constants.USER_MENUS)==null) {
-                //先查出所有菜单，显示到左侧边栏
-                List<Permission> menus = pService.getAllMenus();
-                //将查到的菜单存到session中
+                //先查出用户拥有的所有权限
+                List<Permission> menus = new ArrayList<>();
+                List<Permission> pers = uService.queryPermissionsById(user.getId());
+                Map<Integer,Permission> map = new HashMap<>();
+                for(Permission p:pers) {
+                    map.put(p.getId(),p);
+                }
+                for(Permission p:pers) {
+                    if(p.getPid()==1) {//一级父节点
+                        menus.add(p);
+                    }else if(p.getPid()!=0){
+                        //先找出子节点的父节点
+                        Permission parent = map.get(p.getPid());
+                        //父子节点组装
+                        parent.getChildren().add(p);
+                    }
+                }
+                //将用户拥有对应的权限菜单存到session中
                 session.setAttribute(Constants.USER_MENUS, menus);
-            }
             return "manager/main";
         }
     }

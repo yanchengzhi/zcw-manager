@@ -3,6 +3,7 @@ package com.ycz.zcw.manager.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ycz.zcw.manager.pojo.Permission;
 import com.ycz.zcw.manager.pojo.User;
 
 public interface UserService {
@@ -34,5 +35,7 @@ public interface UserService {
     void insertUserRoles(Map<String, Object> map);//为用户分配角色
 
     void deleteUserRoles(Map<String, Object> map);//取消用户的角色
+
+    List<Permission> queryPermissionsById(Integer id);//查询用户拥有的权限
 
 }

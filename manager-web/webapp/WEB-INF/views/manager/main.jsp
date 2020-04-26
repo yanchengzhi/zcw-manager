@@ -24,7 +24,7 @@
 	}
 	</style>
   </head>
-
+  <%pageContext.setAttribute("header_info", "控制面板"); %>
   <body>
   <!-- 包含头部导航条 -->
   <%@ include file="/WEB-INF/commons/common-header.jsp" %>
