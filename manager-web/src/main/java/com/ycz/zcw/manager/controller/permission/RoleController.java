@@ -20,6 +20,14 @@ import com.ycz.zcw.manager.pojo.Role;
 import com.ycz.zcw.manager.pojo.User;
 import com.ycz.zcw.manager.service.RoleService;
 
+/**
+ * 
+ * @ClassName RoleController
+ * @Description TODO(角色控制器)
+ * @author Administrator
+ * @Date 2020年4月27日 下午3:49:04
+ * @version 1.0.0
+ */
 @Controller
 @RequestMapping("/permission/role/")
 public class RoleController {

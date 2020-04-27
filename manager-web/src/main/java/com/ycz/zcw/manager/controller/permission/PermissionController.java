@@ -14,6 +14,14 @@ import com.ycz.zcw.manager.pojo.AjaxResult;
 import com.ycz.zcw.manager.pojo.Permission;
 import com.ycz.zcw.manager.service.PermissionService;
 
+/**
+ * 
+ * @ClassName PermissionController
+ * @Description TODO(权限控制器)
+ * @author Administrator
+ * @Date 2020年4月27日 下午3:49:18
+ * @version 1.0.0
+ */
 @Controller
 @RequestMapping("/permission/permission/")
 public class PermissionController {
@@ -215,7 +223,6 @@ public class PermissionController {
             result.setSuccess(true);
         } catch (Exception e) {
             e.printStackTrace();
-            result.setData("该菜单名已被占用！");
             result.setSuccess(false);
         }
         return result;
