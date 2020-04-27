@@ -107,7 +107,7 @@ table tbody td:nth-child(even) {
 		<div class="modal-dialog" role="document">
 			<div class="modal-content" style="width: 650px">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
+					<button type="button" class="close" id="closeMe" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -126,14 +126,15 @@ table tbody td:nth-child(even) {
 						<div class="form-group">
 							<label class="col-sm-2 control-label" style="margin-left:25px;margin-right:-15px;margin-top:-7px;">分类简介：</label>
 							<div class="col-sm-8">
-								<textarea name="introduction" id="introduction" class="form-control"
+								<textarea name="introduction" id="introduction" maxlength="30" class="form-control"
 									placeholder="简介" style="height:120px"></textarea> 
+								<p>最多可输入30个文字，已输入<em style="font-weight:bold;color:red;font-style:italic"><span id="text-num">0</span>&nbsp;/&nbsp;30：</em></p>	
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" id="closeMe2" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<button type="button" id="add_btn" class="btn btn-primary">确认</button>
 				</div>
 			</div>
@@ -146,7 +147,7 @@ table tbody td:nth-child(even) {
 		<div class="modal-dialog" role="document">
 			<div class="modal-content" style="width: 650px">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
+					<button type="button" id="closeMe3" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -165,14 +166,15 @@ table tbody td:nth-child(even) {
 						<div class="form-group">
 							<label class="col-sm-2 control-label" style="margin-left:25px;margin-right:-15px;margin-top:-7px;">分类简介：</label>
 							<div class="col-sm-8">
-								<textarea name="introduction" id="edit-introduction" class="form-control"
+								<textarea name="introduction" id="edit-introduction" maxlength=30 class="form-control"
 									placeholder="简介" style="height:120px"></textarea> 
+									<p>最多可输入30个文字，已输入<em style="font-weight:bold;color:red;font-style:italic"><span id="edit-text-num">0</span>&nbsp;/&nbsp;30：</em></p>
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" id="closeMe4" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<button type="button" id="edit_btn" class="btn btn-primary">确认</button>
 				</div>
 			</div>
@@ -359,6 +361,32 @@ table tbody td:nth-child(even) {
 			});
 		});
 		
+		$('#introduction').keyup(function(){
+			var len = $('#introduction').val().length;
+			if(len==0){
+				$('#text-num').text(0);
+			}
+			if(len<=30){
+				$('#text-num').text(len);
+			}
+		});
+		
+		//点击关闭时文字统计清0
+		$('#closeMe').click(function(){
+			$('#text-num').text(0);;
+		});
+		
+		$('#closeMe2').click(function(){
+			$('#text-num').text(0);;
+		});
+		
+		$('#closeMe3').click(function(){
+			$('#edit-text-num').text(0);;
+		});
+		
+		$('#closeMe4').click(function(){
+			$('#edit-text-num').text(0);;
+		});
 		//执行添加操作
 		$('#add_btn').click(function(){
 			var name = $('#name').val();
@@ -383,6 +411,7 @@ table tbody td:nth-child(even) {
 						});
 						//关闭模态框
 						$('#addModal').modal('hide');
+						$('#text-num').text(0);
 						queryPaged(1);
 					}else{
 						layer.msg(result.data,{time:2000,icon:5,shift:5},function(){
@@ -411,6 +440,17 @@ table tbody td:nth-child(even) {
 						var type = result.data;
 						$('#edit-name').val(type.name);
 						$('#edit-introduction').val(type.introduction);//数据回显
+						var len = $('#edit-introduction').val().length;
+						$('#edit-text-num').text(len);
+						$('#edit-introduction').keyup(function(){
+							var newLen = $('#edit-introduction').val().length;
+							if(newLen==0){
+								$('#edit-text-num').text(0);
+							}
+							if(newLen<=30){
+								$('#edit-text-num').text(newLen);
+							}
+						});
 						$('#edit_info_name').text("");
 						$('#edit-name').parent().removeClass('has-error').addClass('has-success');
 						//弹出模态框
@@ -459,6 +499,7 @@ table tbody td:nth-child(even) {
 						});
 						//关闭模态框
 						$('#editModal').modal('hide');
+						$('#edit-text-num').text(0);;
 						queryPaged(1);
 					}else{
 						layer.msg('该分类已存在！',{time:2000,icon:5,shift:5},function(){
