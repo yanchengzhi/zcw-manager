@@ -166,9 +166,8 @@ table tbody td:nth-child(even) {
 					addDiyDom : function(treeId, treeNode) {
 						var icoObj = $("#" + treeNode.tId + "_ico"); // tId = permissionTree_1, $("#permissionTree_1_ico")
 						if (treeNode.icon) {
-							icoObj.removeClass("button ico_docu ico_open")
-									.addClass(treeNode.icon).css("background",
-											"");
+							icoObj.removeClass("button ico_docu ico_open");
+							icoObj.before('<span class="'+treeNode.icon+'"></span>')
 						}
 					},
 					//鼠标悬停时，显示控件

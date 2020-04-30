@@ -20,6 +20,10 @@
 	}
 	table tbody tr:nth-child(odd){background:#F4F4F4;}
 	table tbody td:nth-child(even){color:#C00;}
+    input[type=checkbox] {
+       width:15px;
+       height:15px;        
+    }
 	</style>
   </head>
   <body>
@@ -265,7 +269,8 @@
 						addDiyDom: function(treeId, treeNode){
 							var icoObj = $("#" + treeNode.tId + "_ico"); // tId = permissionTree_1, $("#permissionTree_1_ico")
 							if ( treeNode.icon ) {
-								icoObj.removeClass("button ico_docu ico_open").addClass(treeNode.icon).css("background","");
+								icoObj.removeClass("button ico_docu ico_open");//移除默认图标
+								icoObj.before('<span class="'+treeNode.icon+'"></span>')
 							}
 	                        
 						}

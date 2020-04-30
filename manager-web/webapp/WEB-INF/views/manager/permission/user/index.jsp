@@ -18,6 +18,10 @@
 	}
 	table tbody tr:nth-child(odd){background:#F4F4F4;}
 	table tbody td:nth-child(even){color:#C00;}
+    input[type=checkbox] {
+       width:15px;
+       height:15px;        
+    }
 	</style>
   </head>
   <body>

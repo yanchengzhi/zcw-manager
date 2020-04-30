@@ -86,6 +86,26 @@
     from t_cert
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <!-- 获取总记录条数 -->
+  <select id="getCertsTotal" resultType="int" parameterType="map">
+     select count(*) from t_cert
+     <where>
+        <if test="queryText!=null">
+           and name like concat('%',#{queryText},'%')
+        </if>
+     </where>
+  </select>
+  <!-- 分页查询 -->
+  <select id="queryCertsPaged" resultType="com.ycz.zcw.manager.pojo.Cert" parameterType="map">
+     select * from t_cert
+     <where>
+        <if test="queryText!=null">
+           and name like concat('%',#{queryText},'%')
+        </if>
+     </where>
+     order by id
+     limit #{offset},#{pageSize}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_cert
     where id = #{id,jdbcType=INTEGER}
@@ -95,6 +115,10 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
+  </delete>
+  <!-- 批量删除 -->
+  <delete id="deleteCerts" parameterType="String">
+     delete from t_cert where id in (${value})
   </delete>
   <insert id="insert" parameterType="com.ycz.zcw.manager.pojo.Cert">
     insert into t_cert (id, name)

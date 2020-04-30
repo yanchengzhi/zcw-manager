@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="author" content="">
-<title>项目分类页面</title>
+<title>资质维护页面</title>
 <%@ include file="/WEB-INF/commons/common-css.jsp"%>
 <link rel="stylesheet" href="${APP_PATH}/static/css/main.css">
 <style>
@@ -25,18 +25,18 @@ table tbody td:nth-child(even) {
 	color: #C00;
 }
 input[type=checkbox] {
-      width:15px;
-      height:15px;        
-   }
+     width:15px;
+     height:15px;        
+ }   
 </style>
 </head>
 <body>
 	<!-- 如果在jsp页面中写Java代码，尽量放在一处，还是建议jsp中少用Java代码 -->
 	<%
 	    //设置头部标题
-				pageContext.setAttribute("header_info", "项目分类");
+				pageContext.setAttribute("header_info", "资质维护");
 				//设置边侧栏当前页面的链接为高亮模式
-				pageContext.setAttribute("currentUrl", "manager/type/index");
+				pageContext.setAttribute("currentUrl", "manager/cert/index");
 	%>
 	<%@ include file="/WEB-INF/commons/common-header.jsp"%>
 	<div class="container-fluid">
@@ -63,10 +63,10 @@ input[type=checkbox] {
 							</button>
 						</form>
 						<button type="button" class="btn btn-danger"
-							style="float: right; margin-left: 10px;" onclick="deleteTypes()">
+							style="float: right; margin-left: 10px;" onclick="deleteCerts()">
 							<i class=" glyphicon glyphicon-remove"></i> 删除
 						</button>
-						<button type="button" id="add_type" class="btn btn-primary"
+						<button type="button" id="add_cert" class="btn btn-primary"
 							style="float: right;">
 							<i class="glyphicon glyphicon-plus"></i> 新增
 						</button>
@@ -78,14 +78,13 @@ input[type=checkbox] {
 									<thead>
 										<tr>
 											<th width="45" style="text-align: center">序号</th>
-											<th width="40" style="text-align: center"><input
+											<th width="35" style="text-align: center"><input
 												type="checkbox" id="allSelBox"></th>
-											<th style="text-align: center; width: 250px">分类名称</th>
-											<th style="text-align: center">分类简介</th>
-											<th width="100" style="text-align: center; width: 150px">操作</th>
+											<th style="width: 700px">名称</th>
+											<th style="text-align: center; width: 130px">操作</th>
 										</tr>
 									</thead>
-									<tbody style="text-align: center" id="typeData">
+									<tbody id="certData">
 
 									</tbody>
 
@@ -111,34 +110,26 @@ input[type=checkbox] {
 		<div class="modal-dialog" role="document">
 			<div class="modal-content" style="width: 650px">
 				<div class="modal-header">
-					<button type="button" class="close" id="closeMe" data-dismiss="modal"
+					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel">添加分类</h4>
+					<h4 class="modal-title" id="myModalLabel">添加资质</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal">
 						<div class="form-group">
-							<label class="col-sm-2 control-label" style="margin-left:25px;margin-right:-15px">分类名称：</label>
+							<label class="col-sm-2 control-label" style="margin-left:25px;margin-right:-15px">资质名称：</label>
 							<div class="col-sm-8">
 								<input type="text" name="name" id="name" class="form-control"
-									placeholder="输入分类名称">
+									placeholder="输入资质名称">
 								<p class="help-block label label-warning" id="info_name"></p>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-2 control-label" style="margin-left:25px;margin-right:-15px;margin-top:-7px;">分类简介：</label>
-							<div class="col-sm-8">
-								<textarea name="introduction" id="introduction" maxlength="30" class="form-control"
-									placeholder="简介" style="height:120px"></textarea> 
-								<p>最多可输入30个文字，已输入<em style="font-weight:bold;color:red;font-style:italic"><span id="text-num">0</span>&nbsp;/&nbsp;30：</em></p>	
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" id="closeMe2" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<button type="button" id="add_btn" class="btn btn-primary">确认</button>
 				</div>
 			</div>
@@ -151,34 +142,26 @@ input[type=checkbox] {
 		<div class="modal-dialog" role="document">
 			<div class="modal-content" style="width: 650px">
 				<div class="modal-header">
-					<button type="button" id="closeMe3" class="close" data-dismiss="modal"
+					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel">修改分类</h4>
+					<h4 class="modal-title" id="myModalLabel">修改资质</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal">
 						<div class="form-group">
-							<label class="col-sm-2 control-label" style="margin-left:25px;margin-right:-15px">分类名称：</label>
+							<label class="col-sm-2 control-label" style="margin-left:25px;margin-right:-15px">资质名称：</label>
 							<div class="col-sm-8">
 								<input type="text" name="name" id="edit-name" class="form-control"
-									placeholder="输入分类名称">
+									placeholder="输入资质名称">
 								<p class="help-block label label-warning" id="edit_info_name"></p>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-2 control-label" style="margin-left:25px;margin-right:-15px;margin-top:-7px;">分类简介：</label>
-							<div class="col-sm-8">
-								<textarea name="introduction" id="edit-introduction" maxlength=30 class="form-control"
-									placeholder="简介" style="height:120px"></textarea> 
-									<p>最多可输入30个文字，已输入<em style="font-weight:bold;color:red;font-style:italic"><span id="edit-text-num">0</span>&nbsp;/&nbsp;30：</em></p>
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" id="closeMe4" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<button type="button" id="edit_btn" class="btn btn-primary">确认</button>
 				</div>
 			</div>
@@ -216,7 +199,7 @@ input[type=checkbox] {
 				//获取表头复选框的状态
 				var flg = this.checked;
 				//将表格中的全部复选框状态保持与表头一致
-				$('#typeData :checkbox').each(function() {
+				$('#certData :checkbox').each(function() {
 					this.checked = flg;
 				});
 			});
@@ -226,7 +209,7 @@ input[type=checkbox] {
 			var loadingIndex = null;
 			var jsonData = {
 				"page" : pageNum,
-				"pageSize" : 10
+				"pageSize" : 8
 			};
 			if (likeFlag == true) {
 				jsonData.queryText = $('#query_text').val();
@@ -234,7 +217,7 @@ input[type=checkbox] {
 			//ajax异步请求
 			$
 					.ajax({
-						url : "${APP_PATH}/manager/type/list",
+						url : "${APP_PATH}/manager/cert/list",
 						type : "POST",
 						data : jsonData,
 						beforeSend : function() {
@@ -249,31 +232,28 @@ input[type=checkbox] {
 								var tableContent = "";
 								var pageContent = "";
 								//从后台获取数据
-								var typePage = result.data;
-								var types = typePage.datas;
+								var certPage = result.data;
+								var certs = certPage.datas;
 								//遍历对象
 								$
 										.each(
-												types,
-												function(i, type) {
+												certs,
+												function(i, cert) {
 													tableContent += '<tr>';
-													tableContent += '<td>'
+													tableContent += '<td style="text-align:center">'
 															+ (i + 1) + '</td>';
-													tableContent += '<td><input type="checkbox" id="typeId" value="'+type.id+'"></td>';
+													tableContent += '<td style="text-align:center"><input type="checkbox" id="certId" value="'+cert.id+'"></td>';
 													tableContent += '<td>'
-															+ type.name
+															+ cert.name
 															+ '</td>';
-													tableContent += '<td>'
-															+ type.introduction
-															+ '</td>';
-													tableContent += '<td>';
+													tableContent += '<td style="text-align:center">';
 													tableContent += '<button type="button" class="btn btn-primary btn-xs" onclick="edit('
-															+ type.id
+															+ cert.id
 															+ ')"><i class=" glyphicon glyphicon-pencil"></i></button>&nbsp;&nbsp;&nbsp;';
 													tableContent += '<button type="button" class="btn btn-danger btn-xs" onclick="remove('
-															+ type.id
+															+ cert.id
 															+ ',\''
-															+ type.name
+															+ cert.name
 															+ '\')"><i class=" glyphicon glyphicon-remove"></i></button>';
 													tableContent += '</td>';
 													tableContent += '</tr>';
@@ -291,7 +271,7 @@ input[type=checkbox] {
 											+ (pageNum - 1) + ')">上一页</a></li>';
 								}
 								//显示页码数
-								for (var i = 1; i <= typePage.maxPage; i++) {
+								for (var i = 1; i <= certPage.maxPage; i++) {
 									//添加当前页样式  		    
 									if (i == pageNum) {
 										pageContent += '<li class="active"><a href="#">'
@@ -302,7 +282,7 @@ input[type=checkbox] {
 									}
 								}
 								//下一页
-								if (pageNum < typePage.maxPage) {
+								if (pageNum < certPage.maxPage) {
 									pageContent += '<li><a href="#" onclick="queryPaged('
 											+ (pageNum + 1) + ')">下一页</a></li>';
 								} else {
@@ -310,8 +290,8 @@ input[type=checkbox] {
 								}
 								//末页
 								pageContent += '<li><a href="#" onclick="queryPaged('
-										+ typePage.maxPage + ')">末页</a></li>';
-								$('#typeData').html(tableContent);//添加查询主内容
+										+ certPage.maxPage + ')">末页</a></li>';
+								$('#certData').html(tableContent);//添加查询主内容
 								$('.pagination').html(pageContent);//添加页码导航条
 							} else {
 								layer.msg("查询失败！", {
@@ -327,9 +307,8 @@ input[type=checkbox] {
 		}
 		
 		//添加项目分类
-		$('#add_type').click(function(){
+		$('#add_cert').click(function(){
 			$('#name').val("");
-			$('#introduction').val("");//清空文本框
 			$('#info_name').text("");
 			$('#name').parent().removeClass('has-error').addClass('has-success');
 			//弹出模态框
@@ -341,13 +320,13 @@ input[type=checkbox] {
 				var name = $('#name').val();
 				//先判断是否为空
 				if(name==""){
-					$('#info_name').text("分类名称不能为空！");
+					$('#info_name').text("资质名称不能为空！");
 					$('#name').parent().addClass('has-error');
 					return;
 				}
 				//然后判断名称是否重复
 				$.ajax({
-					url:'${APP_PATH}/manager/type/validateType',
+					url:'${APP_PATH}/manager/cert/validateCert',
 					type:"POST",
 					data:{
 						"name":name
@@ -357,7 +336,7 @@ input[type=checkbox] {
 							$('#info_name').text("");
 							$('#name').parent().removeClass('has-error').addClass('has-success');
 						}else{
-							$('#info_name').text("分类名称已存在！");
+							$('#info_name').text("资质名称已存在！");
 							$('#name').parent().addClass('has-error');
 						}
 					}
@@ -365,48 +344,20 @@ input[type=checkbox] {
 			});
 		});
 		
-		$('#introduction').keyup(function(){
-			var len = $('#introduction').val().length;
-			if(len==0){
-				$('#text-num').text(0);
-			}
-			if(len<=30){
-				$('#text-num').text(len);
-			}
-		});
-		
-		//点击关闭时文字统计清0
-		$('#closeMe').click(function(){
-			$('#text-num').text(0);;
-		});
-		
-		$('#closeMe2').click(function(){
-			$('#text-num').text(0);;
-		});
-		
-		$('#closeMe3').click(function(){
-			$('#edit-text-num').text(0);;
-		});
-		
-		$('#closeMe4').click(function(){
-			$('#edit-text-num').text(0);;
-		});
 		//执行添加操作
 		$('#add_btn').click(function(){
 			var name = $('#name').val();
-			var introduction = $('#introduction').val();
 			if(name==""){
-				layer.msg('分类名称不能为空！',{time:2000,icon:0,shift:5},function(){
+				layer.msg('资质名称不能为空！',{time:2000,icon:0,shift:5},function(){
 					
 				});
 				return;
 			}
 			$.ajax({
-				url:'${APP_PATH}/manager/type/addType',
+				url:'${APP_PATH}/manager/cert/addCert',
 				type:"POST",
 				data:{
-					"name":name,
-					"introduction":introduction
+					"name":name
 				},
 				success:function(result){
 					if(result.success){
@@ -415,7 +366,6 @@ input[type=checkbox] {
 						});
 						//关闭模态框
 						$('#addModal').modal('hide');
-						$('#text-num').text(0);
 						queryPaged(1);
 					}else{
 						layer.msg(result.data,{time:2000,icon:5,shift:5},function(){
@@ -434,7 +384,7 @@ input[type=checkbox] {
 			editId = id;
 			//先进行信息回显
 			$.ajax({
-				url:'${APP_PATH}/manager/type/getType',
+				url:'${APP_PATH}/manager/cert/getCert',
 				type:"POST",
 				data:{
 					"id":id
@@ -443,18 +393,6 @@ input[type=checkbox] {
 					if(result.success){
 						var type = result.data;
 						$('#edit-name').val(type.name);
-						$('#edit-introduction').val(type.introduction);//数据回显
-						var len = $('#edit-introduction').val().length;
-						$('#edit-text-num').text(len);
-						$('#edit-introduction').keyup(function(){
-							var newLen = $('#edit-introduction').val().length;
-							if(newLen==0){
-								$('#edit-text-num').text(0);
-							}
-							if(newLen<=30){
-								$('#edit-text-num').text(newLen);
-							}
-						});
 						$('#edit_info_name').text("");
 						$('#edit-name').parent().removeClass('has-error').addClass('has-success');
 						//弹出模态框
@@ -466,7 +404,7 @@ input[type=checkbox] {
 							var name = $('#edit-name').val();
 							//先判断是否为空
 							if(name==""){
-								$('#edit_info_name').text("分类名称不能为空！");
+								$('#edit_info_name').text("资质名称不能为空！");
 								$('#edit-name').parent().addClass('has-error');
 								return;
 							}
@@ -481,20 +419,18 @@ input[type=checkbox] {
 		//执行修改操作
 		$('#edit_btn').click(function(){
 			var name = $('#edit-name').val();
-			var introduction = $('#edit-introduction').val();
 			if(name==""){
-				layer.msg('分类名称不能为空！',{time:2000,icon:0,shift:5},function(){
+				layer.msg('资质名称不能为空！',{time:2000,icon:0,shift:5},function(){
 					
 				});
 				return;
 			}
 			$.ajax({
-				url:'${APP_PATH}/manager/type/editType',
+				url:'${APP_PATH}/manager/cert/editCert',
 				type:"POST",
 				data:{
 					"id":editId,
-					"name":name,
-					"introduction":introduction
+					"name":name
 				},
 				success:function(result){
 					if(result.success){
@@ -503,10 +439,9 @@ input[type=checkbox] {
 						});
 						//关闭模态框
 						$('#editModal').modal('hide');
-						$('#edit-text-num').text(0);;
 						queryPaged(1);
 					}else{
-						layer.msg('该分类已存在！',{time:2000,icon:5,shift:5},function(){
+						layer.msg('该资质已存在！',{time:2000,icon:5,shift:5},function(){
 							
 						});
 					}
@@ -516,13 +451,13 @@ input[type=checkbox] {
 
 		//单个删除
 		function remove(id, name) {
-			layer.confirm("删除分类【" + name + "】，是否继续？", {
+			layer.confirm("删除资质【" + name + "】，是否继续？", {
 				icon : 3,
 				title : "提示"
 			}, function(cindex) {
 				//删除用户信息
 				$.ajax({
-					url : "${APP_PATH}/manager/type/delete",
+					url : "${APP_PATH}/manager/cert/delete",
 					type : "POST",
 					data : {
 						"id" : id
@@ -555,9 +490,9 @@ input[type=checkbox] {
 		}
 
 		//批量删除
-		function deleteTypes() {
+		function deleteCerts() {
 			//获取选中的所有复选框
-			var boxes = $('#typeData :checked');
+			var boxes = $('#certData :checked');
 			if (boxes.length == 0) {
 				layer.msg("请勾选要删除的记录！", {
 					time : 2000,
@@ -568,7 +503,7 @@ input[type=checkbox] {
 				});
 				return;
 			} else {
-				var typeId = $('#typeId').val();//获取选中的所有id
+				var certId = $('#certId').val();//获取选中的所有id
 				var ids = "";
 				for (var i = 0; i < boxes.length; i++) {
 					ids += boxes[i].defaultValue + ",";
@@ -579,7 +514,7 @@ input[type=checkbox] {
 				}, function(cindex) {
 					//删除用户信息
 					$.ajax({
-						url : "${APP_PATH}/manager/type/deleteTypes",
+						url : "${APP_PATH}/manager/cert/deleteCerts",
 						type : "POST",
 						data : {
 							"ids" : ids
