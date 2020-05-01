@@ -38,7 +38,7 @@
 		  </div>
 		  <div class="form-group has-success has-feedback">
 			<input type="text" class="form-control" name="email" id="email_input" value="${user.email}" placeholder="请输入邮箱地址" style="margin-top:10px;">
-			<span class="glyphicon glyphicon glyphicon-envelope form-control-feedback"></span>
+			<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
 			<span class="error-info" style="color:red;font-size:15px"></span>
 		  </div>
 		  <div class="form-group has-success has-feedback">
@@ -50,7 +50,7 @@
 		  </div>
         <div class="checkbox">
           <label>
-            忘记密码
+                         
           </label>
           <label style="float:right">
             <a href="${APP_PATH}/login.jsp">我有账号</a>

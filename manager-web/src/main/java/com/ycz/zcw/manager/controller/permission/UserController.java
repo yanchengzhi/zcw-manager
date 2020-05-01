@@ -6,7 +6,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +24,10 @@ import com.ycz.zcw.manager.pojo.AjaxResult;
 import com.ycz.zcw.manager.pojo.Page;
 import com.ycz.zcw.manager.pojo.Role;
 import com.ycz.zcw.manager.pojo.User;
+import com.ycz.zcw.manager.pojo.UserToken;
 import com.ycz.zcw.manager.pojo.constants.Constants;
 import com.ycz.zcw.manager.service.RoleService;
+import com.ycz.zcw.manager.service.TokenService;
 import com.ycz.zcw.manager.service.UserService;
 
 /**
@@ -42,6 +47,9 @@ public class UserController {
     
     @Autowired
     private RoleService rService;
+    
+    @Autowired
+    private TokenService tService;
     
     /**
      * 
@@ -83,7 +91,8 @@ public class UserController {
      * @return
      */
     @RequestMapping("login")
-    public String login(User user,HttpSession session) {
+    public String login(User user,HttpSession session,HttpServletResponse response,
+            @RequestParam(value="rememer",defaultValue = "0")String remember) {
         User dbUser = uService.queryUser(user);
         if(dbUser==null) {//登录失败时
             session.setAttribute("errorUser", user);
@@ -92,6 +101,27 @@ public class UserController {
             return "redirect:/login.jsp";
         }else {//登录成功时
             session.setAttribute(Constants.LOGIN_USER, dbUser);
+            //判断用户是否使用了记住我功能
+            if(remember.equals("1")) {//如果使用了
+                //生成一个用来做自动登录功能的的token令牌，数据库1份，用来做比较，浏览器1份（以cookie的形式永久保存）
+                //浏览器访问的时候有可能会带上，根据这个令牌对用户进行匹配
+                String token = UUID.randomUUID().toString().replace("-","");
+                //保存令牌到数据库中，令牌与用户是绑定的
+                UserToken uToken = new UserToken();
+                uToken.setUserId(dbUser.getId());
+                uToken.setAutoLoginToken(token);
+                //执行保存
+                tService.saveToken(uToken);
+                //以cookie的形式保存到浏览器中（通过响应对象）
+                Cookie cookie = new Cookie("autoLogin",token);//新建Cookie对象
+                cookie.setMaxAge(3600 * 24 * 7);//设置cookie的有效时间，默认是秒为单位的，这里设置有效期限为7天
+                //注意，在springMvc中，cookie必须是当前项目下的路径，默认的是"/"，需要修改路径
+                cookie.setPath(session.getServletContext().getContextPath());//设置cookie的路径
+                response.addCookie(cookie);//将cookie添加到响应中
+                //将登陆的用户放在缓存库中，模拟Redis缓存,避免了去数据库检索，数据库检索是一个耗时操作
+                //先去缓存库中查，查不到再去数据库中查
+                session.getServletContext().setAttribute(token, dbUser);
+            }
             return "redirect:/main.html";
         }
     }

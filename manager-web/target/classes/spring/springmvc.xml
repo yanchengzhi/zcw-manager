@@ -21,6 +21,9 @@
     <mvc:annotation-driven/>
     <!-- 静态资源放行 -->
     <mvc:default-servlet-handler/>
+    
+    <!-- 直接将一个请求映射到一个页面,path就是路径，view-name是视图名-->
+    <mvc:view-controller path="toforgetpwd.html" view-name="forgetpwd"/>
       
     <!-- 配置内部资源视图解析器 -->
     <bean id="irvr" class="org.springframework.web.servlet.view.InternalResourceViewResolver">

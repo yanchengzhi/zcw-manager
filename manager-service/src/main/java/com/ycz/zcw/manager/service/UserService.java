@@ -38,4 +38,10 @@ public interface UserService {
 
     List<Permission> queryPermissionsById(Integer id);//查询用户拥有的权限
 
+    boolean sendEmail(String email);//发送邮件给指定用户
+    
+    User checkEmail(String email);//检查邮箱是否存在
+
+    int updateUserPass(String password,User user);//重置用户密码
+
 }

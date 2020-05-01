@@ -1,6 +1,27 @@
+<%@page import="com.ycz.zcw.manager.pojo.constants.Constants"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8" import="com.ycz.zcw.manager.pojo.User"%>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <% 
+        //获取所有Cookie
+        Cookie[] cookies = request.getCookies();
+        //判断Cookie是否为空
+        if(cookies!=null && cookies.length>0){
+            //增强for循环在数组为null时会抛异常，所以先判断非空
+            for(Cookie c:cookies){
+                if(c.getName().equals("autoLogin")){
+                    //先去缓存库中查（Application域模拟缓存库）
+                    User user = (User)application.getAttribute(c.getValue());
+                    if(user!=null){//判断域中是否有
+                        //查到后放到session域中
+                        session.setAttribute(Constants.LOGIN_USER, user);
+                        //然后直接跳转到主页面
+                        response.sendRedirect(request.getContextPath()+"/main.html");
+                    }
+                }
+            }
+        }
+    %>
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
@@ -47,15 +68,16 @@
 		  </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" value="remember-me"> 记住我
+            <input type="checkbox" name="rememer" value="1"> 记住我
+          </label>
+          <label style="float:right;">
+          <a href="${APP_PATH}/register.jsp">我要注册</a>
+          </label><br>
+          <label style="margin-top:7px">
+          <!-- 这里用伪静态实现跳转 -->
+          <a href="${APP_PATH}/toforgetpwd.html">忘记密码</a>
           </label>
           <br>
-          <label>
-            忘记密码
-          </label>
-          <label style="float:right">
-            <a href="${APP_PATH}/register.jsp">我要注册</a>
-          </label>
         </div>
         <a class="btn btn-lg btn-success btn-block" onclick="dologin()" > 登录</a>
       </form>

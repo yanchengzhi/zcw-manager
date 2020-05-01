@@ -28,4 +28,7 @@ public interface UserDao {
 
     List<Permission> queryPermissionsById(Integer id);
 
+    @Select("select * from t_user where email=#{email}")
+    User checkEmail(String email);
+
 }

@@ -9,13 +9,15 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.ycz.zcw.manager.pojo.AjaxResult;
 import com.ycz.zcw.manager.pojo.Permission;
 import com.ycz.zcw.manager.pojo.User;
+import com.ycz.zcw.manager.pojo.UserToken;
 import com.ycz.zcw.manager.pojo.constants.Constants;
-import com.ycz.zcw.manager.service.PermissionService;
-import com.ycz.zcw.manager.service.RoleService;
+import com.ycz.zcw.manager.service.TokenService;
 import com.ycz.zcw.manager.service.UserService;
 
 /**
@@ -33,10 +35,8 @@ public class DispatcherController {
     private UserService uService;
     
     @Autowired
-    private PermissionService pService;
+    private TokenService tService;
     
-    @Autowired
-    private RoleService rService;
     
     /**
      * 
@@ -71,6 +71,57 @@ public class DispatcherController {
                 session.setAttribute(Constants.USER_MENUS, menus);
             return "manager/main";
         }
+    }
+    
+    /**
+     * 
+     * @Description (将重置密码的链接以邮件的形式发送给用户)
+     * @param email
+     * @param model
+     * @return
+     */
+    @RequestMapping("sendEmail")
+    public String sendMail(String email,Model model) {
+        //按照邮箱查找用户
+        boolean flg = uService.sendEmail(email);
+        if(flg) {
+            model.addAttribute("msg","已向您的邮箱"+email+"发送了一封邮件，请注意查收！");
+        }else {
+            model.addAttribute("msg","已向该邮箱发送了一封邮件！");
+        }
+        return "success";
+    }
+    
+    /**
+     * 
+     * @Description (跳转到重置密码页面)
+     * @return
+     */
+    @RequestMapping("resetPass")
+    public String resetPass() {
+        return "reset_password";
+    }
+    
+    /**
+     * 
+     * @Description (修改密码)
+     * @param password
+     * @param token
+     * @return
+     */
+    @RequestMapping("updatePass")
+    public String updatePass(String password,String token,Model model) {
+        UserToken uToken = tService.queryByToken(token);//查出对应的令牌
+        //按照令牌查找用户
+        User user = uService.queryUserById(uToken.getUserId());
+        //重置密码
+        int res = uService.updateUserPass(password,user);
+        if(res==1) {
+            model.addAttribute("msg","密码重置成功！请重新登录！");
+        }else {
+            model.addAttribute("msg","重置密码链接失效，请重新发送！");
+        }
+        return "success";
     }
 
 }
