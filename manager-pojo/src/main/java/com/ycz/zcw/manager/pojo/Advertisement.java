@@ -12,6 +12,8 @@ public class Advertisement {
     private String url;
 
     private Integer userid;
+    
+    private String createtime;
 
     public Integer getId() {
         return id;
@@ -60,4 +62,14 @@ public class Advertisement {
     public void setUserid(Integer userid) {
         this.userid = userid;
     }
+
+    
+    public String getCreatetime() {
+        return createtime;
+    }
+ 
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
+    }
+      
 }

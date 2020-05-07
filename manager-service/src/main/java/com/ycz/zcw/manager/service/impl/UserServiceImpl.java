@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
                 hEmail.setFrom("yan_cheng_zhi@126.com");//发件人
                 hEmail.setSubject("找回密码");//邮件标题
                 //设置邮件内容
-                hEmail.setContent("<h3>半小时内点击链接重置密码</h3><a href='http://127.0.0.1:3000/manager-web/resetPass?token="+tokenStr+"'>重置密码</a>","text/html;charset=utf-8");
+                hEmail.setContent("<h3>半小时内点击链接重置密码</h3><a href='http://121.42.230.150:3000/manager-web/resetPass?token="+tokenStr+"'>重置密码</a>","text/html;charset=utf-8");
                 hEmail.send();//发送邮件
             } catch (EmailException e) {
                 System.out.println("邮件发送失败！");

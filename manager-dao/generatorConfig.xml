@@ -46,7 +46,7 @@
       <property name="enableSubPackages" value="true" />
     </javaClientGenerator>
 
-    <!-- 指定要逆向生成的表 -->  
+    <!-- 指定要逆向生成的表 -->   
     <table tableName="t_user" domainObjectName="User"></table>
     <table tableName="t_user_role" domainObjectName="UserRole"></table>
     <table tableName="t_type" domainObjectName="TType"></table>
@@ -70,5 +70,6 @@
     <table tableName="t_advertisement" domainObjectName="Advertisement"></table>
     <table tableName="t_account_type_cert" domainObjectName="AccountTypeCert"></table>        
     <table tableName="t_user_token" domainObjectName="UserToken"></table>
+    <table tableName="t_business_type" domainObjectName="BusinessType"></table>
   </context>
 </generatorConfiguration>
